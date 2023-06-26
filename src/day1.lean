@@ -1,3 +1,4 @@
+-- 6/23/2023
 
 import tactic.linarith
 import data.real.basic
@@ -86,7 +87,7 @@ begin
   existsi (2 : ℝ),
   intros n nh,
   have left_pos : 0 < 2 * n * n + n + 1,{
-    have h1 : 0 < n, by sorry,
+    have h1 : 0 < n, by sorry, --derivable from n > 2
     have l1 : (0 : ℝ) < (1 : ℝ), by finish,
     have l2 : (0 : ℝ) < (2 : ℝ), by finish,
     have h2 : 0 < 2 * n, by apply mul_pos l2 h1,
@@ -97,6 +98,7 @@ begin
     exact h5,
   },
   simp [abs_of_pos left_pos],
-  
-
+  sorry
+  --subtract 3n^2 from both sides
+  -- -n^2 + n + 1 <= 0 is true by showing its global max < 0
 end
