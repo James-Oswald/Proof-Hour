@@ -10,6 +10,61 @@ structure language {α : Type} (alphabet : set α) :=
 (strings : set (list α))
 (H : ∀(s : list α), s ∈ strings → (∀(c : α), c ∈ s → c ∈ alphabet))
 
+def rearSubstrings {α : Type} : list α -> set(list α)
+| list.nil := ∅
+| (list.cons h t) := {t} ∪ rearSubstrings t 
+
+--If a string S is in a language over an alphabet a, then 
+--all rear substrings of S contain only characters from a.
+lemma rschars {α : Type} {a : set α} (l : language a) (s : list α):
+s ∈ l.strings → ∀(x ∈ rearSubstrings s), ∀(c : α), c ∈ x → c ∈ a :=
+begin
+  intros st x xt c ct,
+  cases s,{
+    simp [rearSubstrings] at xt,
+    contradiction,
+  },{
+    simp [rearSubstrings] at xt,
+    cases l,simp at st,
+    cases xt,{
+      have H := l_H (s_hd :: s_tl) st c,
+      rw<- xt at H,
+      --trivial from ct and H 
+      finish,
+    },{
+      induction x,{
+        simp at ct,
+        contradiction,
+      },{
+        cases ct,
+      }
+    }
+
+  }
+
+
+/-  cases s,{
+    simp [rearSubstrings] at xt,
+    contradiction,
+  },{
+    simp [rearSubstrings] at xt,
+    cases l,
+    simp at st,
+    cases xt,{
+      have H := l_H (s_hd :: s_tl) st c,
+      rw<- xt at H,
+      --trivial from ct and H 
+      finish,
+    },{
+      induction s_tl,
+      simp [rearSubstrings] at xt,
+      contradiction,
+
+      --have H := l_H (s_hd :: s_tl) st c,
+    }
+  }
+-/
+end
 
 lemma l1 {α : Type} {a : set α} :
 ∀ (l1 l2 : language a) (s1 s2 : list α), 
@@ -17,13 +72,15 @@ s1 ∈ l1.strings → s2 ∈ l2.strings →
 ∀(c : α), c ∈ (list.append s1 s2) → c ∈ a :=
 begin
   intros l1 l2 s1 s2 s1l1 s2l2 ca cac,
-  induction s1,
-  simp at cac,
-  cases l2,
-  simp at s2l2,
-  exact l2_H s2 s2l2 ca cac,
-  simp at cac,
-  sorry,
+  cases l1, cases l2,
+  simp [language.strings] at s1l1 s2l2,
+  cases s1,{
+    simp at cac,
+    exact l2_H s2 s2l2 ca cac,
+  },{
+    
+  }
+  
 end
 
 def union {α : Type} {a : set α} 
