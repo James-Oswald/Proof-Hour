@@ -37,9 +37,10 @@ begin
         contradiction,
       },{
         cases ct,
+        sorry,
+        sorry
       }
     }
-
   }
 
 
@@ -78,7 +79,7 @@ begin
     simp at cac,
     exact l2_H s2 s2l2 ca cac,
   },{
-    
+    sorry,
   }
   
 end
