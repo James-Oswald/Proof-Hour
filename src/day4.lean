@@ -92,26 +92,27 @@ def lang_concat {α : Type} {a : set α}
  language.mk {x | ∀(s1 ∈ l1.strings) (s2 ∈ l2.strings),
   x = concat s1 s2}
 
+
 --https://en.wikipedia.org/wiki/Regular_language#Formal_definition
-inductive regular {α : Type} {alphabet : set α} 
-(l : language alphabet) : Prop
+inductive regular {α : Type} {alphabet : set α}
+ : language alphabet -> Prop
 --the empty language is regular
-| empty : l.strings = ∅ → regular
+| empty (l : language alphabet): l.strings = ∅ → regular l
 --for each char in the alphabet c, the singleton language  
 --{c} is regular
-| singleton : 
+| singleton (l : language alphabet): 
   ∀ (c ∈ alphabet), l.strings = {str.mk [c] 
   begin
-    intros c1 c1e, simp at c1e, rw c1e, exact H,
-  end} -> regular
+    finish,
+  end} -> regular l
 --if l is the kleene star of a regular language ls,
 --then l is regular
-| kstar : ∀ (ls : language alphabet), 
-  regular ls -> l = KStar ls -> regular
-| union : ∀ (l1 l2 : language alphabet),
-  regular l1 -> regular l2 -> l = (union l1 l2) -> regular
-| concat : ∀ (l1 l2 : language alphabet),
-  regular l1 -> regular l2 -> l = (lang_concat l1 l2) -> regular
+| kstar (l : language alphabet): ∀ (ls : language alphabet), 
+  regular ls -> (l = KStar ls) -> regular l
+| union (l : language alphabet): ∀ (l1 l2 : language alphabet),
+  regular l1 -> regular l2 -> l = (union l1 l2) -> regular l
+| concat (l : language alphabet): ∀ (l1 l2 : language alphabet),
+  regular l1 -> regular l2 -> l = (lang_concat l1 l2) -> regular l
 
 --Repeated self concatination: a^3 = aaa
 def concatn {α : Type} {alphabet : set α} (s : str alphabet)
@@ -119,6 +120,11 @@ def concatn {α : Type} {alphabet : set α} (s : str alphabet)
 | 0 := emptyStr
 | (nat.succ n) := concat s (concatn n)
 
+
+
+
+
+/-
 def ns : @str nat {1,2} := str.mk [1,2] 
 begin 
   intros ct ce,
@@ -129,3 +135,4 @@ def nl : @language nat {1,2} :=
 language.mk {x | ∃(i : ℕ), x = (concatn ns i)}
 
 --example: regular nl
+-/
